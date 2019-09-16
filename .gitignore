@@ -1,6 +1,7 @@
 # Files
-/failover.py
-/killswitch.py
+
+# Directories
+/logs
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

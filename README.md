@@ -1,3 +1,5 @@
+***DEV BRANCH - WORK IN PROGRESS***
+
 # vit-witness-failover
 *VIT Witness Server Kill Switch and Failover*
 
@@ -12,9 +14,10 @@ I built these two scripts to use on my VIT Witness server. The scripts monitor y
 ### Warning: Use this at your own risk. 
 This script requires knowledge of Linux, Python, Beem, and the VIT Blockchain. I make no promises or guarantees with this software. Please see the software license for more information.
 
+
 **Requirements:**
 * Python 3.7
-* Beem 0.20.19
+* Beem 0.20.22
 * Your VIT Witness account’s active key
 
 **Recommendation:**
@@ -22,12 +25,29 @@ This script requires knowledge of Linux, Python, Beem, and the VIT Blockchain. I
 
 **Setup:**
 * Clone or download repo to your Linux machine
+* [Install required packages for Beem](https://beem.readthedocs.io/en/latest/installation.html#installation)
 * Create a Python virtual environment in the repo’s directory and activate it.
-* Install Beem
+* Install required files: `pip install -r requirements.txt`
 * Create wallet in Beem and set wallet passphrase
 * Import your active key
 
 For help with Beem: https://beem.readthedocs.io/en/latest/index.html 
+
+
+## Version 2.0 Beta
+
+Updates:
+* Logging to file
+* Run script as a service with auto-restart if sys.exit != 0
+
+Outline of new stuff to document:
+* Create .env file
+* Set environment variables
+* Test with nobroadcast to True
+* Setting nobroadcast to False
+* Creating the service file 
+* Helpful commands for periodic monitoring 
+
 
 **Configuration:**
 

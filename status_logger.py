@@ -9,9 +9,9 @@ load_dotenv()
 
 # Variables
 LOG_LEVEL = os.getenv('LOG_LEVEL')
-p = Path()
-p.resolve()
-status_file = Path.cwd() / 'logs' / 'status.log'
+#p = Path()
+#p.resolve()
+#status_file = p.resolve()  / 'logs' / 'status.log'
 
 logger = logging.getLogger(__name__)
 logger_level = logging.getLevelName(LOG_LEVEL)
@@ -20,7 +20,7 @@ logger.setLevel(logger_level)
 
 # Handlers
 c_handler = logging.StreamHandler()
-f_handler = logging.FileHandler(status_file)
+f_handler = logging.FileHandler('status.log')
 c_handler.setLevel(logging.INFO)
 f_handler.setLevel(logging.INFO)
 

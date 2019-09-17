@@ -9,6 +9,8 @@ load_dotenv()
 
 # Variables
 LOG_LEVEL = os.getenv('LOG_LEVEL')
+p = Path()
+p.resolve()
 status_file = Path.cwd() / 'logs' / 'status.log'
 
 logger = logging.getLogger(__name__)

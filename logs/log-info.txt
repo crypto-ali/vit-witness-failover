@@ -1,0 +1,8 @@
+The program will create a log file in this directory called, status.log.
+
+If you set the logging to INFO it will be updated every minute when the script checks the chain
+for your witness node's total missed blocks. If you run it on INFO, please remember to occasionally
+delete the status.log file to keep file size down.
+
+Otherwise run it in WARNING (default setting) and it will only log info when it takes action
+to disable a witness, activate the backup, or if the system raises an exception.

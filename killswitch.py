@@ -32,9 +32,8 @@ stm = Steem(
 	node=["https://peer.vit.tube/"],
 	bundle=True,
 	blocking="head",
-	nobroadcast=NO_BROADCAST, #set True for testing
+	nobroadcast=NO_BROADCAST, #set True for testing	
 	custom_chains=CUSTOM_CHAINS,
-	#keys={'active': wif},
 )
 
 while True:
@@ -78,6 +77,16 @@ while True:
     time.sleep(60) #Pause script for 60 seconds.
   except KeyboardInterrupt:
     sys.exit()
+  except Exception as WitnessDoesNotExistsException:
+    status_logger.logger.exception("Exception occured\n")
+    status_logger.logger.info("Reconnecting...")
+    stm = Steem(
+      node=["https://peer.vit.tube/"],
+      bundle=True,
+      blocking="head",
+      nobroadcast=NO_BROADCAST, #set True for testing	
+      custom_chains=CUSTOM_CHAINS,
+    )
   except Exception as e:
     status_logger.logger.exception("Exception occured\n")
     sys.exit()

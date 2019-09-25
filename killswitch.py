@@ -27,6 +27,7 @@ NATIVE_VESTED = os.environ.get('NATIVE_VESTED', 'VESTS')
 ACCT = os.getenv('ACCOUNT')
 NO_BROADCAST = os.getenv('NO_BROADCAST')
 THRESHOLD = int(os.getenv('K_THRESHOLD'))
+WIF = os.getenv('WIF')
 
 stm = Steem(
 	node=["https://peer.vit.tube/"],
@@ -34,6 +35,7 @@ stm = Steem(
 	blocking="head",
 	nobroadcast=NO_BROADCAST, #set True for testing	
 	custom_chains=CUSTOM_CHAINS,
+	keys={'active': WIF},
 )
 
 while True:
@@ -63,8 +65,8 @@ while True:
       }
       op = operations.Witness_update(**update_witness)
       tx.appendOps(op)
-      tx.appendSigner(ACCT, "active")
-      #tx.appendWif(wif)
+      #tx.appendSigner(ACCT, "active")
+      tx.appendWif(WIF)
       signed_tx = tx.sign()
       broadcast_tx = tx.broadcast()
       #pprint(broadcast_tx)

@@ -29,6 +29,7 @@ NO_BROADCAST = os.getenv('NO_BROADCAST')
 P_THRESHOLD = int(os.getenv('P_THRESHOLD'))
 B_THRESHOLD = int(os.getenv('B_THRESHOLD'))
 BACKUP_KEY = os.getenv('BACKUP_KEY')
+WIF = os.getenv('WIF')
 
 stm = Steem(
 	node=["https://peer.vit.tube/"],
@@ -36,7 +37,7 @@ stm = Steem(
 	blocking="head",
 	nobroadcast=NO_BROADCAST, #set True for testing
 	custom_chains=CUSTOM_CHAINS,
-	#keys={'active': wif},
+	keys={'active': WIF},
 )
 
 while True:
@@ -66,8 +67,8 @@ while True:
       }
       op = operations.Witness_update(**update_witness)
       tx.appendOps(op)
-      tx.appendSigner(ACCT, "active")
-      #tx.appendWif(wif)
+      #tx.appendSigner(ACCT, "active")
+      tx.appendWif(WIF)
       signed_tx = tx.sign()
       broadcast_tx = tx.broadcast()
       #pprint(broadcast_tx)
@@ -114,8 +115,8 @@ try:
   }
   op = operations.Witness_update(**update_witness)
   tx.appendOps(op)
-  tx.appendSigner(ACCT, "active")
-  #tx.appendWif(wif)
+  #tx.appendSigner(ACCT, "active")
+  tx.appendWif(WIF)
   signed_tx = tx.sign()
   broadcast_tx = tx.broadcast()
   #pprint(broadcast_tx)
@@ -152,8 +153,8 @@ while True:
       }
       op = operations.Witness_update(**update_witness)
       tx.appendOps(op)
-      tx.appendSigner(ACCT, "active")
-      #tx.appendWif(wif)
+      #tx.appendSigner(ACCT, "active")
+      tx.appendWif(WIF)
       signed_tx = tx.sign()
       broadcast_tx = tx.broadcast()
       #pprint(broadcast_tx)

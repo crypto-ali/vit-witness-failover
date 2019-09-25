@@ -91,6 +91,7 @@ while True:
       blocking="head",
       nobroadcast=NO_BROADCAST, #set True for testing	
       custom_chains=CUSTOM_CHAINS,
+	  keys={'active': WIF},
     )
   except Exception as e:
     status_logger.logger.exception("Exception occured\n")
@@ -177,6 +178,7 @@ while True:
       blocking="head",
       nobroadcast=NO_BROADCAST, #set True for testing	
       custom_chains=CUSTOM_CHAINS,
+	  keys={'active': WIF},
     )
   except Exception as e:
     status_logger.logger.exception("Exception occured\n")

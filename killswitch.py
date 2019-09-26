@@ -14,6 +14,7 @@ from beembase import operations
 from beem.amount import Amount
 from beem.asset import Asset
 from dotenv import load_dotenv
+import yagmail
 
 import status_logger
 
@@ -28,6 +29,17 @@ ACCT = os.getenv('ACCOUNT')
 NO_BROADCAST = os.getenv('NO_BROADCAST')
 THRESHOLD = int(os.getenv('K_THRESHOLD'))
 WIF = os.getenv('WIF')
+FROM = os.getenv('FROM_ADDRESS')
+TO = os.getenv('TO_ADDRESS')
+
+yag = yagmail.SMTP(FROM, oauth2_file='~/oauth2_creds.json')
+
+# Email Alert Variables:
+killswitch_subject = "Witness server failed, killswitch activated"
+killswitch_body = f"Your VIT Witness server missed more than {THRESHOLD} blocks. The killswitch disabled your server."
+exception_subject = "Killswitch script encountered error and stopped"
+exception_body = """Your killswitch script encountered an unhandled exception and has stopped running. 
+Please login to your monitoring server to review logs and restart the killswitch."""
 
 stm = Steem(
 	node=["https://peer.vit.tube/"],
@@ -70,7 +82,8 @@ while True:
       signed_tx = tx.sign()
       broadcast_tx = tx.broadcast()
       #pprint(broadcast_tx)
-      status_logger.logger.warning("Total missed at or above threshold. Disabling witness server. \nOperation: " + json.dumps(broadcast_tx, indent=4))	  
+      status_logger.logger.warning("Total missed at or above threshold. Disabling witness server. \nOperation: " + json.dumps(broadcast_tx, indent=4))
+      yag.send(TO, killswitch_subject, killswitch_body)
       sys.exit()
     else:
       #print("Witness server operational")
@@ -92,4 +105,5 @@ while True:
     )
   except Exception as e:
     status_logger.logger.exception("Exception occured\n")
+    yag.send(TO, exception_subject, exception_body)
     sys.exit()

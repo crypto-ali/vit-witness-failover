@@ -14,6 +14,7 @@ from beembase import operations
 from beem.amount import Amount
 from beem.asset import Asset
 from dotenv import load_dotenv
+import yagmail
 
 import status_logger
 
@@ -30,6 +31,8 @@ P_THRESHOLD = int(os.getenv('P_THRESHOLD'))
 B_THRESHOLD = int(os.getenv('B_THRESHOLD'))
 BACKUP_KEY = os.getenv('BACKUP_KEY')
 WIF = os.getenv('WIF')
+FROM = os.getenv('FROM_ADDRESS')
+TO = os.getenv('TO_ADDRESS')
 
 stm = Steem(
 	node=["https://peer.vit.tube/"],

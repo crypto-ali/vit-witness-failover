@@ -36,8 +36,9 @@ yag = yagmail.SMTP(FROM, oauth2_file='~/oauth2_creds.json')
 
 # Email Alert Variables:
 killswitch_subject = "Witness server failed, killswitch activated"
-killswitch_body = f"Your VIT Witness server missed more than {THRESHOLD} blocks. The killswitch disabled your server."
-exception_subject = "Killswitch script encountered error and stopped"
+killswitch_body = f"Your VIT Witness server missed more than your set threshold of {THRESHOLD} missed blocks." \
+  "The killswitch disabled your server."
+exception_subject = "Killswitch script encountered an error and stopped"
 exception_body = """Your killswitch script encountered an unhandled exception and has stopped running. 
 Please login to your monitoring server to review logs and restart the killswitch."""
 

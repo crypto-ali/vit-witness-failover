@@ -51,7 +51,7 @@ backup_body = f"Your backup VIT Witness server missed more than your set backup 
 
 exception_subject = "Killswitch script encountered an error and stopped"
 exception_body = """Your killswitch script encountered an unhandled exception and has stopped running. 
-Please login to your monitoring server to review logs and restart the killswitch."""
+Please login to your monitoring server to review logs and restart the failover service."""
 
 stm = Steem(
 	node=["https://peer.vit.tube/"],

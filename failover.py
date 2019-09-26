@@ -34,6 +34,25 @@ WIF = os.getenv('WIF')
 FROM = os.getenv('FROM_ADDRESS')
 TO = os.getenv('TO_ADDRESS')
 
+yag = yagmail.SMTP(FROM, oauth2_file='~/oauth2_creds.json')
+
+# Email Alert Variables:
+primary_subject = "Primary witness server failed, failover activated"
+primary_body = f"Your primary VIT Witness server missed more than your set primary threshold of {P_THRESHOLD} total missed blocks." \
+  "The failover script disabled your primary witness server."
+
+failover_subject = "Backup witness server activated"
+failover_body = "Your backup VIT Witness server was succesfully activated by the failover script" \
+  f"The killswitch will shut down the backup server if your backup threshold of {B_THRESHOLD} total missed blocks is reached." \
+
+backup_subject = "Backup witness server failed, killswitch activated"
+backup_body = f"Your backup VIT Witness server missed more than your set backup threshold of {B_THRESHOLD} total missed blocks." \
+  "The failover script activated killswitch and disabled your backup witness server."
+
+exception_subject = "Killswitch script encountered an error and stopped"
+exception_body = """Your killswitch script encountered an unhandled exception and has stopped running. 
+Please login to your monitoring server to review logs and restart the killswitch."""
+
 stm = Steem(
 	node=["https://peer.vit.tube/"],
 	bundle=True,
@@ -77,6 +96,7 @@ while True:
       #pprint(broadcast_tx)
       #print("Primary witness server disabled.")
       status_logger.logger.warning("Total missed at or above threshold. Disabling primary witness server. \nOperation: " + json.dumps(broadcast_tx, indent=4))
+      yag.send(TO, primary_subject, primary_body)
       break
     else:
       #print("Primary witness server operational")
@@ -98,6 +118,7 @@ while True:
     )
   except Exception as e:
     status_logger.logger.exception("Exception occured\n")
+    yag.send(TO, exception_subject, exception_body)	
     sys.exit()
 
 #Enable backup witness server.
@@ -123,11 +144,13 @@ try:
   tx.appendWif(WIF)
   signed_tx = tx.sign()
   broadcast_tx = tx.broadcast()
+  yag.send(TO, failover_subject, failover_body)
   #pprint(broadcast_tx)
   #print("Backup witness server enabled. Monitoring of backup server will commence shortly.")
   time.sleep(10) #Seconds you want to wait before you start monitoring the backup server.
 except Exception as e:
   status_logger.logger.exception("Exception occured\n")
+  yag.send(TO, exception_subject, exception_body)
   sys.exit()
 
 while True:
@@ -164,6 +187,7 @@ while True:
       #pprint(broadcast_tx)
       #print("Backup witness server disabled. Program terminating.")
       status_logger.logger.warning("Total missed at or above threshold. Disabling backup witness server. \nOperation: " + json.dumps(broadcast_tx, indent=4))
+      yag.send(TO, backup_subject, backup_body)
       sys.exit()
     else:
       #print("Backup witness server operational")
@@ -185,4 +209,5 @@ while True:
     )
   except Exception as e:
     status_logger.logger.exception("Exception occured\n")
+    yag.send(TO, exception_subject, exception_body)
     sys.exit()

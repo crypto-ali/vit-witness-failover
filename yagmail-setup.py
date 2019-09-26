@@ -1,3 +1,4 @@
+import os
 import yagmail
 from dotenv import load_dotenv
 

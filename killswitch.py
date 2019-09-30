@@ -46,10 +46,7 @@ while True:
     json_string = json.dumps(w1.json(), indent=4)
     data = json.loads(json_string)
     total_missed = data["total_missed"]
-    #print(currentdatetime.strftime("%a %b %d %Y - %I:%M:%S %p"))
-    #print("Witness " + ACCT + " current total missed: " + str(total_missed))
     if total_missed >= THRESHOLD:
-      #print("Total missed at or above threshold. Disabling witness server.")
 	  #Disable witness.
       tx = TransactionBuilder(steem_instance=stm)
       update_witness = {
@@ -69,12 +66,9 @@ while True:
       tx.appendWif(WIF)
       signed_tx = tx.sign()
       broadcast_tx = tx.broadcast()
-      #pprint(broadcast_tx)
       status_logger.logger.warning("Total missed at or above threshold. Disabling witness server. \nOperation: " + json.dumps(broadcast_tx, indent=4))
       sys.exit()
     else:
-      #print("Witness server operational")
-      #print("--------------------------")
       status_logger.logger.info("Witness " + ACCT + " current total missed: " + str(total_missed) + "\nWitness server operational\n--------------------------")
     time.sleep(60) #Pause script for 60 seconds.
   except KeyboardInterrupt:

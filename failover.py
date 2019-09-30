@@ -48,10 +48,7 @@ while True:
     json_string = json.dumps(w1.json(), indent=4)
     data = json.loads(json_string)
     total_missed = data["total_missed"]
-    #print(currentdatetime.strftime("%a %b %d %Y - %I:%M:%S %p"))
-    #print("Witness " + ACCT + " current total missed: " + str(total_missed))
     if total_missed >= P_THRESHOLD:
-      #print("Total missed at or above threshold. Disabling primary witness server.")
 	  #Disable witness.
       tx = TransactionBuilder(steem_instance=stm)
       update_witness = {
@@ -71,13 +68,9 @@ while True:
       tx.appendWif(WIF)
       signed_tx = tx.sign()
       broadcast_tx = tx.broadcast()
-      #pprint(broadcast_tx)
-      #print("Primary witness server disabled.")
       status_logger.logger.warning("Total missed at or above threshold. Disabling primary witness server. \nOperation: " + json.dumps(broadcast_tx, indent=4))
       break
     else:
-      #print("Primary witness server operational")
-      #print("----------------------------------")
       status_logger.logger.info("Witness " + ACCT + " current total missed: " + str(total_missed) + "\nPrimary witness server operational\n--------------------------")
     time.sleep(60) #Pause script for 60 seconds.
   except KeyboardInterrupt:
@@ -101,7 +94,6 @@ while True:
 try:
   #Pause script momentarily after disabling primary witness.
   time.sleep(60)
-  #print("Enabling backup witness server.")
   tx = TransactionBuilder(steem_instance=stm)
   update_witness = {
     "owner": ACCT, 
@@ -120,8 +112,6 @@ try:
   tx.appendWif(WIF)
   signed_tx = tx.sign()
   broadcast_tx = tx.broadcast()
-  #pprint(broadcast_tx)
-  #print("Backup witness server enabled. Monitoring of backup server will commence shortly.")
   time.sleep(10) #Seconds you want to wait before you start monitoring the backup server.
 except Exception as e:
   status_logger.logger.exception("Exception occured\n")
@@ -135,10 +125,7 @@ while True:
     json_string = json.dumps(w1.json(), indent=4)
     data = json.loads(json_string)
     total_missed = data["total_missed"]
-    #print(currentdatetime.strftime("%a %b %d %Y - %I:%M:%S %p"))
-    #print("Witness " + ACCT + " current total missed: " + str(total_missed))
     if total_missed >= B_THRESHOLD:
-      #print("Total missed at or above threshold. Disabling backup witness server.")
 	  #Disable witness.
       tx = TransactionBuilder(steem_instance=stm)
       update_witness = {
@@ -158,13 +145,9 @@ while True:
       tx.appendWif(WIF)
       signed_tx = tx.sign()
       broadcast_tx = tx.broadcast()
-      #pprint(broadcast_tx)
-      #print("Backup witness server disabled. Program terminating.")
       status_logger.logger.warning("Total missed at or above threshold. Disabling backup witness server. \nOperation: " + json.dumps(broadcast_tx, indent=4))
       sys.exit()
     else:
-      #print("Backup witness server operational")
-      #print("---------------------------------")
       status_logger.logger.info("Witness " + ACCT + " current total missed: " + str(total_missed) + "\nBackup witness server operational\n--------------------------")
     time.sleep(60) #Pause script for 60 seconds.
   except KeyboardInterrupt:

@@ -33,7 +33,6 @@ FROM = os.getenv('FROM_ADDRESS')
 FROM_PASS = os.getenv('FROM_PASS')
 TO = os.getenv('TO_ADDRESS')
 
-#yag = yagmail.SMTP(FROM, oauth2_file='~/oauth2_creds.json')
 yag = yagmail.SMTP(FROM, FROM_PASS)
 
 # Email Alert Variables:

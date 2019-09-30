@@ -32,9 +32,10 @@ B_THRESHOLD = int(os.getenv('B_THRESHOLD'))
 BACKUP_KEY = os.getenv('BACKUP_KEY')
 WIF = os.getenv('WIF')
 FROM = os.getenv('FROM_ADDRESS')
+FROM_PASS = os.getenv('FROM_PASS')
 TO = os.getenv('TO_ADDRESS')
 
-yag = yagmail.SMTP(FROM, oauth2_file='~/oauth2_creds.json')
+yag = yagmail.SMTP(FROM, FROM_PASS)
 
 # Email Alert Variables:
 primary_subject = "Primary witness server failed, failover activated"
@@ -42,7 +43,7 @@ primary_body = f"Your primary VIT Witness server missed more than your set prima
   "The failover script disabled your primary witness server."
 
 failover_subject = "Backup witness server activated"
-failover_body = "Your backup VIT Witness server was succesfully activated by the failover script" \
+failover_body = "Your backup VIT Witness server was succesfully activated by the failover script. " \
   f"The killswitch will shut down the backup server if your backup threshold of {B_THRESHOLD} total missed blocks is reached." \
 
 backup_subject = "Backup witness server failed, killswitch activated"

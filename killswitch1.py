@@ -30,9 +30,11 @@ NO_BROADCAST = os.getenv('NO_BROADCAST')
 THRESHOLD = int(os.getenv('K_THRESHOLD'))
 WIF = os.getenv('WIF')
 FROM = os.getenv('FROM_ADDRESS')
+FROM_PASS = os.getenv('FROM_PASS')
 TO = os.getenv('TO_ADDRESS')
 
-yag = yagmail.SMTP(FROM, oauth2_file='~/oauth2_creds.json')
+#yag = yagmail.SMTP(FROM, oauth2_file='~/oauth2_creds.json')
+yag = yagmail.SMTP(FROM, FROM_PASS)
 
 # Email Alert Variables:
 killswitch_subject = "Witness server failed, killswitch activated"

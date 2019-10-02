@@ -141,6 +141,7 @@ try:
   #tx.appendWif(WIF)
   signed_tx = tx.sign()
   broadcast_tx = tx.broadcast()
+  status_logger.logger.info("Activated Backup Witness Server \nOperation: " + json.dumps(broadcast_tx, indent=4))
   yag.send(TO, failover_subject, failover_body)
   time.sleep(10) #Seconds you want to wait before you start monitoring the backup server.
 except Exception as e:

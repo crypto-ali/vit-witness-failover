@@ -116,6 +116,7 @@ try:
   #tx.appendWif(WIF)
   signed_tx = tx.sign()
   broadcast_tx = tx.broadcast()
+  status_logger.logger.info("Activated Backup Witness Server \nOperation: " + json.dumps(broadcast_tx, indent=4))
   time.sleep(10) #Seconds you want to wait before you start monitoring the backup server.
 except Exception as e:
   status_logger.logger.exception("Exception occured\n")

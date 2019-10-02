@@ -26,7 +26,7 @@ NATIVE_PREFIX = os.environ.get('NATIVE_PREFIX', 'VIT')
 NATIVE_VESTED = os.environ.get('NATIVE_VESTED', 'VESTS')
 UNLOCK = os.environ.get('UNLOCK')
 ACCT = os.getenv('ACCOUNT')
-NO_BROADCAST = os.getenv('NO_BROADCAST')
+NO_BROADCAST = bool(int(os.getenv('NO_BROADCAST')))
 THRESHOLD = int(os.getenv('K_THRESHOLD'))
 #WIF = os.getenv('WIF')
 

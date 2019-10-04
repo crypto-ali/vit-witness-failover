@@ -29,7 +29,7 @@ UNLOCK = os.getenv('UNLOCK')
 ACCT = os.getenv('ACCOUNT')
 NO_BROADCAST = bool(int(os.getenv('NO_BROADCAST')))
 THRESHOLD = int(os.getenv('K_THRESHOLD'))
-#WIF = os.getenv('WIF')
+WIF = os.getenv('WIF')
 FROM = os.getenv('FROM_ADDRESS')
 FROM_PASS = os.getenv('FROM_PASS')
 TO = os.getenv('TO_ADDRESS')
@@ -50,10 +50,10 @@ stm = Steem(
 	blocking="head",
 	nobroadcast=NO_BROADCAST, #set True for testing	
 	custom_chains=CUSTOM_CHAINS,
-	#keys={'active': WIF},
+	keys={'active': WIF},
 )
 
-stm.wallet.unlock(UNLOCK)
+#stm.wallet.unlock(UNLOCK)
 
 while True:
   try:
@@ -79,8 +79,8 @@ while True:
       }
       op = operations.Witness_update(**update_witness)
       tx.appendOps(op)
-      tx.appendSigner(ACCT, "active")
-      #tx.appendWif(WIF)
+      #tx.appendSigner(ACCT, "active")
+      tx.appendWif(WIF)
       signed_tx = tx.sign()
       broadcast_tx = tx.broadcast()
       status_logger.logger.warning("Total missed at or above threshold. Disabling witness server. \nOperation: " + json.dumps(broadcast_tx, indent=4))
@@ -100,9 +100,9 @@ while True:
       blocking="head",
       nobroadcast=NO_BROADCAST, #set True for testing	
       custom_chains=CUSTOM_CHAINS,
-	  #keys={'active': WIF},
+      keys={'active': WIF},
     )
-    stm.wallet.unlock(UNLOCK)
+#    stm.wallet.unlock(UNLOCK)
   except Exception as e:
     status_logger.logger.exception("Exception occured\n")
     yag.send(TO, exception_subject, exception_body)

@@ -58,6 +58,10 @@ Outline of new stuff to document:
 
 Decide if you are going to use the kill switch script or the failover script and follow the corresponding directions below. If you only have one server and not backup, use the kill switch script. If you have a primary witness server and a backup witness server to fail back to, use the failover script.
 
+
+
+## OLD SECTION - Remove before merging to Master.
+
 ### Kill Switch:
 
 While in the repo directory on your Linux machine run:

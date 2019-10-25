@@ -18,16 +18,21 @@ Lastly, you can choose to run this script on a detatched screen or as a system s
 ### Warning: Use this at your own risk. 
 This script requires knowledge of Linux, Python, Beem, and the VIT Blockchain. I make no promises or guarantees with this software. Please see the software license for more information.
 
+### Version 2.0 New Featurs
+* Better logging
+* Run script as a service with auto-restart if system exists non-zero
+* Script automaticallyl reconnects to VIT node if connection dropped due to temporary network issues
 
 **Requirements:**
-* Python 3.7
-* Beem 0.20.22
+* Linux OS - tested mostly with Ubuntu
+* Python 3.7 (not tested in 3.8, yet)
+* Modules listed in requirements.txt file
 * Your VIT Witness account’s active key
 
 **Recommendation:**
 * Run this script on a separate server from your witness server(s)
 
-**Setup:**
+**General Setup:**
 * Clone or download repo to your Linux machine
 * [Install required packages for Beem](https://beem.readthedocs.io/en/latest/installation.html#installation)
 * Create a Python virtual environment in the repo’s directory and activate it.
@@ -38,12 +43,6 @@ This script requires knowledge of Linux, Python, Beem, and the VIT Blockchain. I
 
 For help with Beem: https://beem.readthedocs.io/en/latest/index.html 
 
-
-## Version 2.0 Beta
-
-Updates:
-* Logging to file
-* Run script as a service with auto-restart if sys.exit != 0
 
 Outline of new stuff to document:
 * Create .env file
@@ -58,7 +57,39 @@ Outline of new stuff to document:
 
 Decide if you are going to use the kill switch script or the failover script and follow the corresponding directions below. If you only have one server and not backup, use the kill switch script. If you have a primary witness server and a backup witness server to fail back to, use the failover script.
 
+Next, decide if you want to receive email notifications when this monitoring script takes action. If no notifications wanted, run killswitch.py or failover.py. If you do want email notifications, run either killswitch1.py or failover1.py. You will need to add your from Gmail address and app password as well as a to address in the .env file to receive notifications.
 
+Lastly, decide if you want to run this script on a detatched screen or as a system service. Running as a detatched screen is easier. Running as a system service allows it to run in the background as well as have the ability to enable the service to start when the VPS boots up or is rebooted after installing updates, etc.
+
+If you run script in a detatched screen all logs will be written to status.log file in the script's directory. If running as a system service all logs are written to the system journal.
+
+**Create .env file**
+
+Run: 
+
+```$ cp sample.env.txt .env```
+
+Open .env file in your preferred text editor and fill out or set all variables and save file. If you are running one of the killswitch scripts you will need to only adjust the K_THRESHOLD variable for missed blocks. If running one of the failover scripts you will need to set P_THRESHOLD and B_THRESHOLD variables for total missed blocks for both primary and backup witness servers. Also, if using email notifications, fill in the three Yagmail variables at the bottom of the file.
+
+When using the email notifications you must use a Gmail address for the from address. For security it is recommended to us an app password instead of your Gmail account's regular password. For information on using app passwords, [see this Google Support article](https://support.google.com/accounts/answer/185833?hl=en).
+
+### Testing
+
+**Testing Email Sending**
+
+If you are using email notifications: open .env file, set LOG_LEVEL=INFO, add your three Yagmail variables, and save. Then run:
+
+```$ python yagmail-setup.py```
+
+If no errors, console will report email is successfully sent. Check your TO email address's inbox. It may take a few minutes to arrive. 
+
+**Test witness update operations with nobroadcast set to True**
+
+Open a new screen:
+
+```$ screen```
+
+Navigate to the script's directory if you aren't already in it. Open your .env file with your preferred text editor and set NO_BROADCAST=1. Set LOG_LEVEL=INFO to see detailed info printed to console and written to status.log.
 
 ## OLD SECTION - Remove before merging to Master.
 

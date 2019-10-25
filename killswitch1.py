@@ -40,9 +40,6 @@ yag = yagmail.SMTP(FROM, FROM_PASS)
 killswitch_subject = "Witness server failed, killswitch activated"
 killswitch_body = f"Your VIT Witness server missed more than your set threshold of {THRESHOLD} total missed blocks." \
   "The killswitch disabled your server."
-exception_subject = "Killswitch script encountered an error and stopped"
-exception_body = """Your killswitch script encountered an unhandled exception and has stopped running. 
-Please login to your monitoring server to review logs and restart the killswitch."""
 
 stm = Steem(
 	node=["https://peer.vit.tube/"],
@@ -105,5 +102,8 @@ while True:
 #    stm.wallet.unlock(UNLOCK)
   except Exception as e:
     status_logger.logger.exception("Exception occured\n")
-    yag.send(TO, exception_subject, exception_body)
+    yag = yagmail.SMTP(FROM, FROM_PASS)
+    e_subject = "VIT Witness Killswitch Error Occured"
+    e_body = "Exception occured. Killswitch script has stopped running. Please login and review log file."
+    yag.send(TO, e_subject, e_body)
     sys.exit()

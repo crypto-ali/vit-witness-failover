@@ -1,6 +1,7 @@
 import os
 import yagmail
 from dotenv import load_dotenv
+import status_logger
 
 load_dotenv()
 
@@ -9,13 +10,15 @@ FROM = os.getenv('FROM_ADDRESS')
 FROM_PASS = os.getenv('FROM_PASS')
 TO = os.getenv('TO_ADDRESS')
 
-#yag = yagmail.SMTP(FROM, oauth2_file='~/oauth2_creds.json')
-yag = yagmail.SMTP(FROM, FROM_PASS)
+try:
+  status_logger.logger.info("Testing Yagmail module. Sending test email.")
+  yag = yagmail.SMTP(FROM, FROM_PASS)
 
-to = TO
-subject = 'Can you read me?'
-body = "If so, then Yagmail is working with oauth2."
-body2 = "If so, then Yagmail is working with email & app password."
+  subject = 'Can you read me?'
+  body = "If so, then Yagmail is working with email & app password."
 
-#yag.send(to, subject, body)
-yag.send(to, subject, body2)
+  yag.send(TO, subject, body)
+  status_logger.logger.info("No errors encountered. Email sent. Check your inbox.")
+except Exception as e:
+  status_logger.logger.exception("Exception occured")
+  print(e)

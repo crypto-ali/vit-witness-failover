@@ -51,10 +51,6 @@ backup_subject = "Backup witness server failed, killswitch activated"
 backup_body = f"Your backup VIT Witness server missed more than your set backup threshold of {B_THRESHOLD} total missed blocks." \
   "The failover script activated killswitch and disabled your backup witness server."
 
-exception_subject = "Killswitch script encountered an error and stopped"
-exception_body = """Your killswitch script encountered an unhandled exception and has stopped running. 
-Please login to your monitoring server to review logs and restart the failover service."""
-
 stm = Steem(
 	node=["https://peer.vit.tube/"],
 	bundle=True,
@@ -116,7 +112,10 @@ while True:
     #stm.wallet.unlock(UNLOCK)
   except Exception as e:
     status_logger.logger.exception("Exception occured\n")
-    yag.send(TO, exception_subject, exception_body)	
+    yag = yagmail.SMTP(FROM, FROM_PASS)
+    e_subject = "VIT Witness Killswitch Error Occured"
+    e_body = "Exception occured. Killswitch script has stopped running. Please login and review log file."
+    yag.send(TO, e_subject, e_body)	
     sys.exit()
 
 #Enable backup witness server.
@@ -146,7 +145,10 @@ try:
   time.sleep(10) #Seconds you want to wait before you start monitoring the backup server.
 except Exception as e:
   status_logger.logger.exception("Exception occured\n")
-  yag.send(TO, exception_subject, exception_body)
+  yag = yagmail.SMTP(FROM, FROM_PASS)
+  e_subject = "VIT Witness Killswitch Error Occured"
+  e_body = "Exception occured. Killswitch script has stopped running. Please login and review log file."
+  yag.send(TO, e_subject, e_body)
   sys.exit()
 
 while True:
@@ -199,5 +201,8 @@ while True:
     #stm.wallet.unlock(UNLOCK)
   except Exception as e:
     status_logger.logger.exception("Exception occured\n")
-    yag.send(TO, exception_subject, exception_body)
+    yag = yagmail.SMTP(FROM, FROM_PASS)
+    e_subject = "VIT Witness Killswitch Error Occured"
+    e_body = "Exception occured. Killswitch script has stopped running. Please login and review log file."
+    yag.send(TO, e_subject, e_body)
     sys.exit()

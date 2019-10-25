@@ -7,9 +7,13 @@
 
 **Failover:** Automatic failover from primary witness server to backup witness server, with kill switch if backup fails.
 
-Thanks to Simon for helping me debug my witness enable/disable transaction code for this script.
+Thanks to Simon for helping with the witness enable/disable transaction code for this script.
 
 I built these two scripts to use on my VIT Witness server. The scripts monitor your witness account’s total blocks missed. In the scripts you set a threshold variable that is a number greater than your current total missed blocks. If you miss enough blocks that your account’s total missed blocks number is greater than or equal to your threshold value, then the scripts will take action. I currently use the failover script as I have a backup server. If you have only one server, then you should use the kill switch script.
+
+There are two verisions of each script. The version with a 1 at the end of the file name includes email notification feature.
+
+Lastly, you can choose to run this script on a detatched screen or as a system service. I run it as a system service that starts on system boot. This makes the script more reliable.
 
 ### Warning: Use this at your own risk. 
 This script requires knowledge of Linux, Python, Beem, and the VIT Blockchain. I make no promises or guarantees with this software. Please see the software license for more information.
@@ -28,8 +32,9 @@ This script requires knowledge of Linux, Python, Beem, and the VIT Blockchain. I
 * [Install required packages for Beem](https://beem.readthedocs.io/en/latest/installation.html#installation)
 * Create a Python virtual environment in the repo’s directory and activate it.
 * Install required files: `pip install -r requirements.txt`
-* Create wallet in Beem and set wallet passphrase
-* Import your active key
+* [Create wallet in Beem and set wallet passphrase](https://beem.readthedocs.io/en/latest/cli.html#using-the-wallet)
+* [Import your account and add active key into Beem Wallet](https://beem.readthedocs.io/en/latest/cli.html#common-commands)
+* Set VIT node in Beem: `beempy set nodes https://peer.vit.tube`
 
 For help with Beem: https://beem.readthedocs.io/en/latest/index.html 
 

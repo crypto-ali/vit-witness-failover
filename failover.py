@@ -94,30 +94,42 @@ while True:
     status_logger.logger.exception("Exception occured\n")	
     sys.exit()
 
-#Enable backup witness server.
+# Enable backup witness server.
 try:
-  #Pause script momentarily after disabling primary witness.
+  # Pause script momentarily after disabling primary witness.
   time.sleep(60)
-  tx = TransactionBuilder(steem_instance=stm)
-  update_witness = {
-    "owner": ACCT, 
-    "url": "No website yet", 
-    "block_signing_key": NATIVE_PREFIX + BACKUP_KEY, 
-    "props": {
-      "account_creation_fee": Amount("0.100 %s" % (NATIVE_SYMBOL)),
-      "maximum_block_size":131072, 
-    },
-  "fee": Amount("0.000 %s" % (NATIVE_SYMBOL)),
-  "prefix": NATIVE_PREFIX,
-  }
-  op = operations.Witness_update(**update_witness)
-  tx.appendOps(op)
-  #tx.appendSigner(ACCT, "active")
-  tx.appendWif(WIF)
-  signed_tx = tx.sign()
-  broadcast_tx = tx.broadcast()
-  status_logger.logger.info("Activated Backup Witness Server \nOperation: " + json.dumps(broadcast_tx, indent=4))
-  time.sleep(10) #Seconds you want to wait before you start monitoring the backup server.
+  set_shared_steem_instance(stm)
+  currentdatetime = datetime.datetime.now()
+  w1 = Witness(ACCT)
+  json_string = json.dumps(w1.json(), indent=4)
+  data = json.loads(json_string)
+  total_missed = data["total_missed"]
+  if total_missed >= B_THRESHOLD:
+    # Don't activate backup witness.
+    status_logger.logger.info(f"Total missed blocks exceeds Backup Threshold of {B_THRESHOLD} blocks. Backup server will not be activated.")
+    sys.exit()
+  else:
+    # Activate the backup witness.  
+    tx = TransactionBuilder(steem_instance=stm)
+    update_witness = {
+      "owner": ACCT, 
+      "url": "No website yet", 
+      "block_signing_key": NATIVE_PREFIX + BACKUP_KEY, 
+      "props": {
+        "account_creation_fee": Amount("0.100 %s" % (NATIVE_SYMBOL)),
+        "maximum_block_size":131072, 
+      },
+    "fee": Amount("0.000 %s" % (NATIVE_SYMBOL)),
+    "prefix": NATIVE_PREFIX,
+    }
+    op = operations.Witness_update(**update_witness)
+    tx.appendOps(op)
+    #tx.appendSigner(ACCT, "active")
+    tx.appendWif(WIF)
+    signed_tx = tx.sign()
+    broadcast_tx = tx.broadcast()
+    status_logger.logger.info("Activated Backup Witness Server \nOperation: " + json.dumps(broadcast_tx, indent=4))
+    time.sleep(10) #Seconds you want to wait before you start monitoring the backup server.
 except Exception as e:
   status_logger.logger.exception("Exception occured\n")
   sys.exit()

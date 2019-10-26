@@ -172,7 +172,7 @@ RestartSec=30s
 WantedBy=multi-user.target
 ``` 
 
-Now, edit the ExecStart line. You need to replace to two paths. The first path is the path to the Python executable in your virtual environment. The second path is the path to the witness script you want to run (killswitch.py, failover1.py, etc).
+Now, edit the ExecStart line. You need to replace the two file paths. The first path is the path to the Python executable in your virtual environment. The second path is the path to the witness script you want to run (killswitch.py, failover1.py, etc).
 
 If you cloned the repo on an Ubuntu machine in the user directory then your ExecStart line would look something like this:
 

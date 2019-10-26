@@ -1,5 +1,3 @@
-***DEV BRANCH - WORK IN PROGRESS***
-
 # vit-witness-failover
 *VIT Witness Server Kill Switch and Failover*
 
@@ -21,7 +19,7 @@ This script requires knowledge of Linux, Python, Beem, and the VIT Blockchain. I
 ### Version 2.0 New Featurs
 * Better logging
 * Run script as a service with auto-restart if system service exits non-zero
-* Script automaticallyl reconnects to VIT node if connection dropped due to temporary network issues
+* Script automatically reconnects to VIT node if connection dropped due to temporary network issues
 
 **Requirements:**
 * Linux OS - tested mostly with Ubuntu
@@ -44,11 +42,11 @@ This script requires knowledge of Linux, Python, Beem, and the VIT Blockchain. I
 For help with Beem: https://beem.readthedocs.io/en/latest/index.html 
 
 
-**Configuration:**
+### Configuration:
 
-Decide if you are going to use the kill switch script or the failover script and follow the corresponding directions below. If you only have one server and not backup, use the kill switch script. If you have a primary witness server and a backup witness server to fail back to, use the failover script.
+Decide if you are going to use the kill switch script or the failover script. If you only have one server and not backup, use the kill switch script. If you have a primary witness server and a backup witness server to fall back to, use the failover script.
 
-Next, decide if you want to receive email notifications when this monitoring script takes action. If no notifications wanted, run killswitch.py or failover.py. If you do want email notifications, run either killswitch1.py or failover1.py. You will need to add your from Gmail address and app password as well as a to address in the .env file to receive notifications.
+Next, decide if you want to receive email notifications when this monitoring script takes action. If no notifications wanted, run killswitch.py or failover.py. If you do want email notifications, run either killswitch1.py or failover1.py. You will need to add a Gmail address as the from address, its app password as well as a to address in the .env file to receive notifications.
 
 Lastly, decide if you want to run this script on a detatched screen or as a system service. Running as a detatched screen is easier. Running as a system service allows it to run in the background as well as have the ability to enable the service to start when the VPS boots up or is rebooted after installing updates, etc.
 
@@ -159,7 +157,8 @@ or
 
 Now paste in the contents of sample-service-file.txt from the Github repo. Text is included below for convenience.
 
-```[Unit]
+```
+[Unit]
 Description=VIT Witness Failover and Killswitch
 After=multi-user.target
 
@@ -170,7 +169,8 @@ Restart=on-failure
 RestartSec=30s
 
 [Install]
-WantedBy=multi-user.target``` 
+WantedBy=multi-user.target
+``` 
 
 Now, edit the ExecStart line. You need to replace to two paths. The first path is the path to the Python executable in your virtual environment. The second path is the path to the witness script you want to run (killswitch.py, failover1.py, etc).
 

@@ -20,7 +20,7 @@ This script requires knowledge of Linux, Python, Beem, and the VIT Blockchain. I
 
 ### Version 2.0 New Featurs
 * Better logging
-* Run script as a service with auto-restart if system exists non-zero
+* Run script as a service with auto-restart if system service exits non-zero
 * Script automaticallyl reconnects to VIT node if connection dropped due to temporary network issues
 
 **Requirements:**
@@ -42,15 +42,6 @@ This script requires knowledge of Linux, Python, Beem, and the VIT Blockchain. I
 * Set VIT node in Beem: `beempy set nodes https://peer.vit.tube`
 
 For help with Beem: https://beem.readthedocs.io/en/latest/index.html 
-
-
-Outline of new stuff to document:
-* Create .env file
-* Set environment variables
-* Test with nobroadcast to True
-* Setting nobroadcast to False
-* Creating the service file 
-* Helpful commands for periodic monitoring 
 
 
 **Configuration:**
@@ -75,122 +66,147 @@ When using the email notifications you must use a Gmail address for the from add
 
 ### Testing
 
+Open a new screen:
+
+```$ screen```
+
+Navigate to the script's directory if you aren't already in it. Activate your virtual environment.
+
+```$ source venv/bin/activate```
+
+Replace venv with whatever you named your virtual environment.
+
 **Testing Email Sending**
 
-If you are using email notifications: open .env file, set LOG_LEVEL=INFO, add your three Yagmail variables, and save. Then run:
+If you are using email notifications: open .env file with your preferred text editor, set LOG_LEVEL=INFO, add your three Yagmail variables, and save. Then run:
 
 ```$ python yagmail-setup.py```
 
-If no errors, console will report email is successfully sent. Check your TO email address's inbox. It may take a few minutes to arrive. 
+If no errors, console will report email is successfully sent. Check your TO email address's inbox. It may take a few minutes to arrive. Any errors will print to console and be written to status.log. 
 
 **Test witness update operations with nobroadcast set to True**
+
+Open your .env file with your preferred text editor and set NO_BROADCAST=1. Set LOG_LEVEL=INFO to see detailed info printed to console and written to status.log. 
+
+**First test:** 
+Set your threshold variable(s) higher than your total missed and save the .env file.
+
+Now run your chosen script, ex:
+
+```$ python killswitch.py```
+
+Console should print info about your witness and current total missed and that server is operational. If so, test is successful.
+
+**Second test:**
+Set your K_THRESHOLD variable below your total missed or to 0 to test. If running failover script, set P_THRESHOLD variable below or to 0.
+
+Run your chosen script.
+
+Console should report warning about missing too many blocks and deactivating. If killswitch script, script will exit after running disable witness operation. If failover script, it will disable primary witness, wait for one minute, activate backup, then begin monitoring backup witness. If this is what happens, test passed.
+
+**Test three (failover script only):**
+Set both thresholds to below your total missed or to 0 to test.
+
+Run your chosen script.
+
+Console should report warning about missing too many blocks and deactivate primary witness. After one minute it will activate backup witness. After about 10 seconds it will begin monitoring backup witness and see it too has missed too many blocks and will deactivate backup. If this is what happens, test passed.
+
+Once you have passed all tests your script is ready to be put into production. If you want to be doubly sure that your script is functioning properly, carry out all the tests again with NO_BROADCAST=0 to do live witness updates. This is the absolute way to ensure that you have no wallet or key permission errors that would keep the script from updating your witness.
+
+### Run in Production
+
+Now that you are ready to run the script in production, open your .env file with your preferred text editor. Set NO_BROADCAST=0. Set LOG_LEVEL=WARNING. Set your threshold variable(s) to higher than your total missed. Save the file.
+
+**Running in detatched screen**
 
 Open a new screen:
 
 ```$ screen```
 
-Navigate to the script's directory if you aren't already in it. Open your .env file with your preferred text editor and set NO_BROADCAST=1. Set LOG_LEVEL=INFO to see detailed info printed to console and written to status.log.
+Navigate to the script's directory if you aren't already in it. Activate your virtual environment.
 
-## OLD SECTION - Remove before merging to Master.
+```$ source venv/bin/activate```
 
-### Kill Switch:
+Replace venv with whatever you named your virtual environment.
 
-While in the repo directory on your Linux machine run:
+Now run your chosen script, ex:
 
-```$ cp sample-killswitch.py killswitch.py```
+```$ python killswitch.py```
 
-Open killswitch.py with a text editor.
+Since you are now running it with LOG_LEVEL=WARNING, you won't see anything printed to the console as long as everything is working correctly. Only warnings and errors will be logged.
 
-_**Recommended:**_ If using environment variable or keyring to keep Beem wallet unlocked make the following edits:
-* Line 23: Replace username with your witness account username
-* Line 25: Set threshold to equal the total number of blocks missed for killswitch to activate
-* Line31: Set nobroadcast. Set to True for testing or False for production
+To detatch screen, type:
 
-Save the file.
+```Ctrl-a d```
 
-_**Not recommended:**_ If you will be using your active key directly in the script, make the following edits:
-* Line 23: Replace username with your witness account username
-* Line 24: Uncomment and add your active key
-* Line 25: Set threshold to equal the total number of blocks missed for killswitch to activate.
-* Line 31: Set nobroadcast. Set to True for testing or False for production
-* Line 33: Uncomment line 33
-* Line 63: Comment line 63
-* Line 64: Uncomment line 64
+Now you can exit your SSH session on your VPS and log back in later. 
 
-Save the file.
+For more info on using screen, see the [screen man page](https://linux.die.net/man/1/screen).
 
-#### Test killswitch.py
-* Set nobroadcast=True
-* Set threshold to a number greater than your current total blocks missed
-* Run script
-* In console you should see date, time, witness name, total missed and statement: “Witness server operational”. This will update every 60 seconds.
-* After confirming proper operation, stop script.
-* Set threshold to 0 to test disable script in nobroadcast mode
-* Run script
-* Console should report that total missed is at or above threshold, disabling server. Then you will see a transaction print.
-* If you see this, it worked.
+**Running as a system service**
 
-If desired you can also do a live test with nobroadcast set to False and threshold set to 0 to see the kill switch script actually disable the witness. This will ensure that you don’t have any wallet locked, incorrect password, missing key, or any other wallet or active authority related issues.
+To run the script as a system service it is necessary to create a service file.
 
-After successfully disabling witness with the live test procedure, re-enable witness.
+Step 1: Change to /lib/systemd/system directory. 
 
-Once you confirm that everything is working, set nobroadcast to False, set threshold to some number greater than your current total missed blocks, and save file. 
+Step 2: Create and open a new .service file using your preferred text editor. Give the file a memorable name. Ex:
 
-Then run the script in a screen and detach screen before exiting your session so that the script will continue to run. This is not a set it and forget it tool. You should still regularly check your witness server and monitor server for correct functioning.
+```$ sudo vi vitwitness.service```
 
-### Failover:
+or
 
-While in the repo directory on your Linux machine run:
+```$ sudo nano vitwitness.service```
 
-```$ cp sample-failover.py failover.py```
+Now paste in the contents of sample-service-file.txt from the Github repo. Text is included below for convenience.
 
-Open failover.py with a text editor.
+```[Unit]
+Description=VIT Witness Failover and Killswitch
+After=multi-user.target
 
-_**Recommended:**_ If using environment variable or keyring to keep Beem wallet unlocked make the following edits:
-* Line 23: Replace username with your witness account username
-* Line 26: Set primary_threshold to equal the total number of blocks missed for failover to activate
-* Line 29: Set backup_threshold to equal the total number of blocks missed for kill switch to activate
-* Line 31: Set backup_signing_key. Paste you backup witness server block signing key here with the VIT prefix removed. Ex. If your key is: “VIT789abc123xyz”, put “789abc123xyz”.
-* Line 37: Set nobroadcast. Set to True for testing or False for production
+[Service]
+Type=simple
+ExecStart=/path/to/ENV/bin/python /path/to/python/script.py
+Restart=on-failure
+RestartSec=30s
+
+[Install]
+WantedBy=multi-user.target``` 
+
+Now, edit the ExecStart line. You need to replace to two paths. The first path is the path to the Python executable in your virtual environment. The second path is the path to the witness script you want to run (killswitch.py, failover1.py, etc).
+
+If you cloned the repo on an Ubuntu machine in the user directory then your ExecStart line would look something like this:
+
+```ExecStart=/home/USERNAME/vit-witness-failover/venv/bin/python /home/USERNAME/vit-witness-failover/SCRIPT.py```
+
+Replacing USERNAME with your Linux VPS username and replacing SCRIPT with the witness monitor script your want to use (killswitch.py, failover1.py, etc).
 
 Save the file.
 
-_**Not recommended:**_ If you will be using your active key directly in the script, make the following edits:
-* Line 23: Replace username with your witness account username
-* Line 24: Uncomment and paste active key
-* Line 26: Set primary_threshold to equal the total number of blocks missed for failover to activate
-* Line 29: Set backup_threshold to equal the total number of blocks missed for kill switch to activate
-* Line 31: Set backup_signing_key. Paste your backup witness server block signing key here with the VIT prefix removed. Ex. If you key is: “VIT789abc123xyz”, put “789abc123xyz”.
-* Line 37: Set nobroadcast. Set to True for testing or False for production
-* Line 39: Uncomment line 39
-* Line 69: Comment line 69
-* Line 70: Uncomment line 70
-* Line 102: Comment line 102
-* Line 103: Uncomment line 103
-* Line 140: Comment line 140
-* Line 141: Uncomment line 141
+Then run:
 
-Save the file.
+```$ sudo systemctl daemon-reload```
 
-#### Test the failover.py
-* Set nobroadcast=True
-* Test 1: Set both primary and backup thresholds to a number greater than your current total blocks missed
-* Run script
-* In console you should see date, time, witness name, total missed and statement: “Primary witness server operational”. This will update every 60 seconds.
-* After confirming proper operation, stop script.
-* Test 2: Set primary threshold to 0 and backup threshold to a number higher than your current total blocks missed to test primary server disable script in nobroadcast mode
-* Run script
-* In console you should see “Total missed at or above threshold. Disabling primary witness server.” It will then print a disable transaction and “Primary witness server disabled.” Then 60 seconds later it will show “Enabling backup witness server.” It will then print a witness enable transaction with your backup signing key along with a message that it will begin monitoring backup witness soon. Lastly, you should see date, time, witness name, total missed and statement: “Backup witness server operational”. This will update every 60 seconds.
-* After confirming proper operation, stop script.
-* Test 3: Final nobroadcast test: Set both thresholds to 0.
-* Run script
-* In console you should see “Total missed at or above threshold. Disabling primary witness server.” It will then print a disable transaction and “Primary witness server disabled.” Then 60 seconds later it will show “Enabling backup witness server.” It will then print a witness enable transaction with your backup signing key along with a message that it will begin monitoring backup witness soon. Then when monitoring of back up witness starts you should see “Total missed at or above threshold. Disabling backup witness server.” Then it will print a disable witness transaction in console and exit the program.
-* If all three tests pass, then the script is working as intended.
+To set the service to autostart on system boot, run:
 
-If desired you can also do a live test with nobroadcast set to False and both thresholds set to 0 to see the failover script actually disable, enable, and then disable the witness. This will ensure that you don’t have any wallet locked, incorrect password, missing key, or any other wallet or active authority related issues. 
+```$ sudo systemctl enable vitwitness.service```
 
-After successfully disabling witness with the live test procedure, re-enable witness.
+To start the service, run:
 
-Once confirmed that everything is working, set nobroadcast to False, set thresholds greater than current total missed (backup_threshold should always be greater than primary_threshold), and save file. 
+```$ sudo systemctl start vitwitness.service```
 
-Then run the script in a screen and detach screen before exiting your session so that the script will continue to run. This is not a set it and forget it tool. You should still regularly check your witness server and monitor server for correct functioning.
+To check the status of the service, run:
+
+```$ sudo systemctl status vitwitness.service```
+
+In the commands above, change vitwitness.service to whatever you named your service file.
+
+For more information on using systemctl, see the [systemctl man page](http://manpages.ubuntu.com/manpages/xenial/man1/systemctl.1.html).
+
+Lastly, to check on your witness killswitch / failover script running as a service, you can use the following two commands:
+
+```$ sudo systemctl status vitwitness.service```
+
+```$ sudo journalctl --unit=vitwitness.service```
+
+
+*This is not a set it and forget it tool. You should still regularly check your witness server and monitor server for correct functioning.*

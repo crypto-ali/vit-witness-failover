@@ -34,7 +34,7 @@ This script requires knowledge of Linux, Python, Beem, and the VIT Blockchain. I
 * Clone or download repo to your Linux machine
 * [Install required packages for Beem](https://beem.readthedocs.io/en/latest/installation.html#installation)
   * ```sudo apt-get install build-essential libssl-dev python-dev curl```
-  * For Python3.7 also install: `sudo apt install python3.7-dev```
+  * For Python3.7 also install: `sudo apt install python3.7-dev`
 * Create a Python virtual environment in the repo’s directory and activate it.
 * Install required files: `pip install -r requirements.txt`
 * Set VIT node in Beem: `beempy set nodes https://peer.vit.tube`

@@ -201,7 +201,19 @@ To check the status of the service, run:
 
 ```$ sudo systemctl status vitwitness.service```
 
-In the commands above, change vitwitness.service to whatever you named your service file.
+In the commands above, change vitwitness.service to whatever you named your service file. If you make changes to your service file, after saving them remember to run the daemon-reload command above to make your file changes get picked up by systemd.
+
+Common systemctl commands:
+
+```$ sudo systemctl start vitwitness.service```
+
+```$ sudo systemctl stop vitwitness.service```
+
+```$ sudo systemctl restart vitwitness.service```
+
+```$ sudo systemctl status vitwitness.service```
+
+Disable autostart on system boot: `$ sudo systemctl disable vitwitness.service`
 
 For more information on using systemctl, see the [systemctl man page](http://manpages.ubuntu.com/manpages/xenial/man1/systemctl.1.html).
 

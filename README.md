@@ -33,11 +33,14 @@ This script requires knowledge of Linux, Python, Beem, and the VIT Blockchain. I
 **General Setup:**
 * Clone or download repo to your Linux machine
 * [Install required packages for Beem](https://beem.readthedocs.io/en/latest/installation.html#installation)
+  * ```sudo apt-get install build-essential libssl-dev python-dev curl```
+  * For Python3.7 also install: `sudo apt install python3.7-dev```
 * Create a Python virtual environment in the repo’s directory and activate it.
 * Install required files: `pip install -r requirements.txt`
-* [Create wallet in Beem and set wallet passphrase](https://beem.readthedocs.io/en/latest/cli.html#using-the-wallet)
-* [Import your account and add active key into Beem Wallet](https://beem.readthedocs.io/en/latest/cli.html#common-commands)
 * Set VIT node in Beem: `beempy set nodes https://peer.vit.tube`
+* [Create wallet in Beem and set wallet passphrase](https://beem.readthedocs.io/en/latest/cli.html#using-the-wallet)
+  * `beempy createwallet`
+* [Import your account and add active key into Beem Wallet](https://beem.readthedocs.io/en/latest/cli.html#common-commands)
 
 For help with Beem: https://beem.readthedocs.io/en/latest/index.html 
 

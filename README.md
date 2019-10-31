@@ -16,7 +16,7 @@ Lastly, you can choose to run this script on a detatched screen or as a system s
 ### Warning: Use this at your own risk. 
 This script requires knowledge of Linux, Python, Beem, and the VIT Blockchain. I make no promises or guarantees with this software. Please see the software license for more information.
 
-### Version 2.0 New Featurs
+### Version 2.0 New Features
 * Better logging
 * Run script as a service with auto-restart if system service exits non-zero
 * Script automatically reconnects to VIT node if connection dropped due to temporary network issues

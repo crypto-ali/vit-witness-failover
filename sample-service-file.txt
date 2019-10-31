@@ -1,0 +1,12 @@
+[Unit]
+Description=VIT Witness Failover and Killswitch
+After=multi-user.target
+
+[Service]
+Type=simple
+ExecStart=/path/to/ENV/bin/python /path/to/python/script.py
+Restart=on-failure
+RestartSec=30s
+
+[Install]
+WantedBy=multi-user.target

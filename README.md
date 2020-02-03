@@ -148,7 +148,7 @@ For more info on using screen, see the [screen man page](https://linux.die.net/m
 
 To run the script as a system service it is necessary to create a service file.
 
-Step 1: Change to /lib/systemd/system directory. 
+Step 1: Change to `/etc/systemd/system` directory. 
 
 Step 2: Create and open a new .service file using your preferred text editor. Give the file a memorable name. Ex:
 
